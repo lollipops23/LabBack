@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: albums_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: albums_db
+    depends_on:
+      - db
+
+    # frontend:
+    #   build:
+    #     context: ../../web/orm_visual/orm-visualization
+    #     dockerfile: Dockerfile
+    #   ports:
+    #     - "3000:80" # Или другой порт, как вам удобно
+
+volumes:
+  postgres_data:

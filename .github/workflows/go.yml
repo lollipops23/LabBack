@@ -1,0 +1,39 @@
+name: Go
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.23.1"
+
+      - name: Create Go module
+        run: go mod init test-go-project
+
+      - name: Ensure dependencies are tidy
+        run: go mod tidy
+
+      - name: Vendor dependencies
+        run: go mod vendor
+
+      - name: Build
+        run: go build -v .
+
+      - name: Start App
+        run: |
+          ./app & 
+          sleep 5
+
+      # - name: Test application
+      #   run: curl http://localhost:8080
